@@ -1,33 +1,29 @@
 import React from "react"
+import SEO from "../components/seo"
 import { Link, graphql } from "gatsby"
 
-import SEO from "../components/seo"
-
-const IndexPage = props => {
-  const feturedPosts = props.data.post.edges
+export default function Blog(props) {
+  const allPosts = props.data.post.edges
   return (
     <>
-      <SEO title="Home" />
-      <h2>Featured Blogs</h2>
-      {feturedPosts.map(post => (
+      <SEO title="Blog" />
+      {allPosts.map(post => (
         <li key={post.node.id} style={{ listStyle: "none" }}>
           <h3>{post.node.title}</h3>
           <p>{post.node.summary}</p>
           <Link to={`/blog/${post.node.slug.current}`}>Read More</Link>
         </li>
       ))}
-      <Link to="/page-2/">Go to page 2</Link> <br />
     </>
   )
 }
 
-export default IndexPage
-
 export const pageQuery = graphql`
-  query homePageQuery {
-    post: allSanityPost(filter: { featured: { eq: true } }) {
+  query blogPageQuery {
+    post: allSanityPost(sort: { fields: publishedAt, order: DESC }) {
       edges {
         node {
+          publishedAt
           tags {
             id
             name
